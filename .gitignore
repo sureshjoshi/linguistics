@@ -1,0 +1,6 @@
+*.bin
+*.so
+
+.mypy_cache/
+.venv/
+build/
