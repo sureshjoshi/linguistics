@@ -95,6 +95,26 @@ In that light, bonus points to C++, Odin, and Python for providing `walk` built-
 
 **: `deno compile` includes a stripped Deno runtime, the TS file itself is 336 bytes.
 
+## Sqlite
+
+TODO
+
+## Image Manipulation
+
+TODO
+
+## Protobuf/gRPC
+
+TODO
+
+## WASM
+
+TODO
+
+## UI/Game
+
+TODO
+
 ## System Information
 
 TODO
