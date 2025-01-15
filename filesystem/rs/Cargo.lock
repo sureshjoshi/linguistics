@@ -3,5 +3,5 @@
 version = 4
 
 [[package]]
-name = "naive-walk"
+name = "naive-walk-rs"
 version = "0.1.0"

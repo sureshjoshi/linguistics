@@ -2,16 +2,6 @@
 
 set -e
 
-# readonly COMMANDS=(
-#     "c;clang -std=c17 -O3 main.c -o fib.bin;./fib.bin"
-#     "cpp;clang++ -std=c++23 -O3 main.cpp -o fib.bin;./fib.bin"
-#     "odin;odin build . -o:aggressive -out:fib.bin;./fib.bin"
-#     "py;odin build . -o:speed -out:fib.bin;python3 "
-#     "rs;cargo build --release;./target/release/fib"
-#     "swift;swift build -c release ;./.build/release/fib"
-#     "ts;deno compile main.ts;deno run main.ts"
-# )
-
 function main() {
     echo "Cleaning out previous files"
     rm -rf .mypy_cache build/ c/fib.bin cpp/fib.bin odin/fib.bin py/__pycache__ py/*.so rs/target swift/.build ts/fib.bin 
@@ -25,13 +15,13 @@ function main() {
         --sort "command" \
         --export-markdown "./compile-time.md" \
         --show-output \
-        "clang -std=c17 -O3 c/main.c -o c/fib.bin" \
-        "clang++ -std=c++23 -O3 cpp/main.cpp -o cpp/fib.bin" \
-        "odin build odin -o:aggressive -out:odin/fib.bin" \
+        "clang -std=c17 -O3 c/main.c -o c/fib-c.bin" \
+        "clang++ -std=c++23 -O3 cpp/main.cpp -o cpp/fib-cpp.bin" \
+        "odin build odin -o:aggressive -out:odin/fib-odin.bin" \
         "mypyc py/fib.py && mv *.so py/" \
         "cargo build --release --manifest-path=rs/Cargo.toml" \
         "swift build --configuration=release --package-path=swift" \
-        "deno compile --output=ts/fib.bin ts/main.ts"
+        "deno compile --output=ts/fib-ts.bin ts/main.ts"
 
     echo "Running binaries"
     hyperfine \
@@ -39,13 +29,13 @@ function main() {
         --runs 10 \
         --sort "command" \
         --export-markdown "./run-time.md" \
-        "c/fib.bin" \
-        "cpp/fib.bin" \
-        "odin/fib.bin" \
+        "c/fib-c.bin" \
+        "cpp/fib-cpp.bin" \
+        "odin/fib-odin.bin" \
         "python3.13 py/main.py" \
-        "rs/target/release/fib" \
-        "swift/.build/release/fib" \
-        "ts/fib.bin"
+        "rs/target/release/fib-rs" \
+        "swift/.build/release/fib-swift" \
+        "ts/fib-ts.bin"
 }
 
 main "$@"; exit

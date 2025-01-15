@@ -3,8 +3,8 @@
 import PackageDescription
 
 let package = Package(
-    name: "naive-walk",
+    name: "naive-walk-swift",
     targets: [
-        .executableTarget(name: "naive-walk"),
+        .executableTarget(name: "naive-walk-swift"),
     ]
 )

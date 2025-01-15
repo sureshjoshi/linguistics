@@ -3,8 +3,8 @@
 import PackageDescription
 
 let package = Package(
-    name: "fib",
+    name: "fib-swift",
     targets: [
-        .executableTarget(name: "fib"),
+        .executableTarget(name: "fib-swift"),
     ]
 )
