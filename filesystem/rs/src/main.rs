@@ -8,13 +8,16 @@ fn naive_walk(dir: &Path) -> (u32, u64) {
     for entry in entries {
         let entry = entry.unwrap();
         let path = entry.path();
+        if path.is_symlink() {
+            continue;
+        }
         if path.is_dir() {
             let (inner_number_of_files, inner_total_size) = naive_walk(&path);
             number_of_files += inner_number_of_files;
             total_size += inner_total_size;
         } else {
             number_of_files += 1;
-            total_size += path.metadata().unwrap().len();
+            total_size += path.symlink_metadata().unwrap().len();
         }
     }
     (number_of_files, total_size)
