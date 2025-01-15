@@ -61,7 +61,7 @@ For results, it's as I would expect. All of the low-level languages perform simi
 
 ## Filesystem - Naive Walk
 
-This experiment was a basic directory walk - recursive, iterative, whatever felt the most natural in the language. On many of my projects and scripts, at some point, I’ll be walking the filesystem. It might not be at runtime, but at least during build time, or when writing scripts or performing transformations/analyses. This is typically over 100 to 1000 files, so almost negligible performance hit in any language.
+This experiment was a basic directory walk (300k files, 28GB total size) - recursive, iterative, whatever felt the most natural in the language. On many of my projects and scripts, at some point, I’ll be walking the filesystem. It might not be at runtime, but at least during build time, or when writing scripts or performing transformations/analyses. This is typically over 100 to 1000 files, so almost negligible performance hit in any language.
 
 As a result, it’s not super important that the directory walk is fast. I’ve only had 2 instances in the past (and one upcoming) where I’ve needed to continually walk through, and operate on, more than 1M files at a time. In those cases, the cost of performing the operations/transformations outweighed the actual directory walking by a factor of 10-50x.
 
@@ -92,6 +92,7 @@ In that light, bonus points to C++, Odin, and Python for providing `walk` built-
 | `ts/naive-walk-ts.bin` | 9.072 ± 0.124 | 8.951 | 9.238 | 1.17 ± 0.04 | 66,222** |
 
 *: The python size is the compiled object + the python source files. Excludes the Python interpreter (which would be another 25-50MB).
+
 **: `deno compile` includes a stripped Deno runtime, the TS file itself is 336 bytes.
 
 ## System Information
