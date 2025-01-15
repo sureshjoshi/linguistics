@@ -3,8 +3,8 @@
 import PackageDescription
 
 let package = Package(
-    name: "fib-swift",
+    name: "naive-walk-swift",
     targets: [
-        .executableTarget(name: "fib-swift"),
+        .executableTarget(name: "naive-walk-swift"),
     ]
 )

@@ -59,6 +59,41 @@ For results, it's as I would expect. All of the low-level languages perform simi
 
 **: `deno compile` includes a stripped Deno runtime, the TS file itself is 338 bytes.
 
+## Filesystem - Naive Walk
+
+This experiment was a basic directory walk - recursive, iterative, whatever felt the most natural in the language. On many of my projects and scripts, at some point, I’ll be walking the filesystem. It might not be at runtime, but at least during build time, or when writing scripts or performing transformations/analyses. This is typically over 100 to 1000 files, so almost negligible performance hit in any language.
+
+As a result, it’s not super important that the directory walk is fast. I’ve only had 2 instances in the past (and one upcoming) where I’ve needed to continually walk through, and operate on, more than 1M files at a time. In those cases, the cost of performing the operations/transformations outweighed the actual directory walking by a factor of 10-50x.
+
+In that light, bonus points to C++, Odin, and Python for providing `walk` built-ins to the language. And dammit Rust, add `jwalk` or `walkdir` to the stdlib. And a big WTF with Swift... I've created a ticket to review why the performance is so bad, I must be completely blundering something about the API usage. Maybe there are more Swift-y APIs to use, and I'm getting caught in the ObjC translation layer or something. I also need to take a quick look at Rust, as I recall looking into this a year ago - and there was an easy win to get it closer to C++ speeds, but I don't recall what it was.
+
+### Compile speeds
+
+| Command | Mean [ms] | Min [ms] | Max [ms] | Relative |
+|:---|---:|---:|---:|---:|
+| `clang -std=c17 -O3 c/main.c -o c/naive-walk-c.bin` | 331.2 | 331.2 | 331.2 | 1.00 |
+| `clang++ -std=c++23 -O3 cpp/main.cpp -o cpp/naive-walk-cpp.bin` | 906.1 | 906.1 | 906.1 | 2.74 |
+| `odin build odin -o:aggressive -out:odin/naive-walk-odin.bin` | 1458.9 | 1458.9 | 1458.9 | 4.40 |
+| `mypyc py/lib.py && mv *.so py/` | 1363.4 | 1363.4 | 1363.4 | 4.12 |
+| `cargo build --release --manifest-path=rs/Cargo.toml` | 2375.7 | 2375.7 | 2375.7 | 7.17 |
+| `swift build --configuration=release --package-path=swift` | 3121.3 | 3121.3 | 3121.3 | 9.42 |
+| `deno compile --allow-read --output=ts/naive-walk-ts.bin ts/main.ts` | 663.6 | 663.6 | 663.6 | 2.00 |
+
+### Runtime
+
+| Command | Mean [s] | Min [s] | Max [s] | Relative | Size (kB) |
+|:---|---:|---:|---:|---:|---:|
+| `c/naive-walk-c.bin` | 7.764 ± 0.233 | 7.489 | 8.055 | 1.00 | 33 |
+| `cpp/naive-walk-cpp.bin` | 7.783 ± 0.239 | 7.571 | 8.161 | 1.00 ± 0.04 | 125 |
+| `odin/naive-walk-odin.bin` | 7.991 ± 0.296 | 7.702 | 8.477 | 1.03 ± 0.05 | 168 |
+| `python3.13 py/main.py` | 9.358 ± 0.226 | 9.138 | 9.615 | 1.21 ± 0.05 | 148* |
+| `rs/target/release/naive-walk-rs` | 8.799 ± 0.384 | 8.500 | 9.235 | 1.13 ± 0.06 | 339 |
+| `swift/.build/release/naive-walk-swift` | 25.605 ± 0.120 | 25.459 | 25.748 | 3.30 ± 0.10 | 69 |
+| `ts/naive-walk-ts.bin` | 9.072 ± 0.124 | 8.951 | 9.238 | 1.17 ± 0.04 | 66,222** |
+
+*: The python size is the compiled object + the python source files. Excludes the Python interpreter (which would be another 25-50MB).
+**: `deno compile` includes a stripped Deno runtime, the TS file itself is 336 bytes.
+
 ## System Information
 
 TODO
