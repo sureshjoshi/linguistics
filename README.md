@@ -115,6 +115,12 @@ TODO
 
 TODO
 
+## Rendering my Blog
+
+Previously this was in Python, currently using Deno/Typescript - would be an interesting case study on something I use often.
+
+TODO
+
 ## System Information
 
 TODO
